@@ -1,0 +1,8 @@
+.env
+config.php
+composer.phar
+composer.lock
+vendor/
+coverage/
+phpunit.xml
+.*.cache
