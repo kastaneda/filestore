@@ -3,9 +3,9 @@ CREATE TABLE filenames (
   placeId int(10) UNSIGNED DEFAULT NULL,
   filename varchar(255) NOT NULL,
   bytes int(11) UNSIGNED DEFAULT NULL,
-  mtime timestamp NULL DEFAULT NULL,
+  mtime int(11) DEFAULT NULL,
   md5 char(32) DEFAULT NULL,
-  lastUpdate timestamp NOT NULL DEFAULT current_timestamp()
+  lastUpdate int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE places (
