@@ -9,7 +9,7 @@ use App\Model\Place;
 use App\Repository\PlaceRepository;
 use App\Util\FileFinder;
 
-class ScanCommand implements CommandInterface
+abstract class AbstractScanCommand implements CommandInterface
 {
     protected PlaceRepository $places;
 
@@ -48,8 +48,5 @@ class ScanCommand implements CommandInterface
         }
     }
 
-    protected function proceedFile(Place $place, string $filename): void
-    {
-        echo $place->path . '/' . $filename . PHP_EOL;
-    }
+    abstract protected function proceedFile(Place $place, string $filename): void;
 }
