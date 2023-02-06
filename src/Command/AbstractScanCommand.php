@@ -8,7 +8,6 @@ use App\Database;
 use App\Model\Place;
 use App\Repository\FilenameRepository;
 use App\Repository\PlaceRepository;
-use App\Util\FileFinder;
 
 abstract class AbstractScanCommand implements CommandInterface
 {
@@ -43,12 +42,5 @@ abstract class AbstractScanCommand implements CommandInterface
         echo 'Usage: ' . $scriptName . ' [placeId]' . PHP_EOL;
     }
 
-    protected function proceedPlace(Place $place): void
-    {
-        foreach (FileFinder::find($place->path) as $filename) {
-            $this->proceedFile($place, $filename);
-        }
-    }
-
-    abstract protected function proceedFile(Place $place, string $filename): void;
+    abstract protected function proceedPlace(Place $place): void;
 }

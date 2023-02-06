@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Model\Place;
 
-class DummyScanCommand extends AbstractScanCommand
+class DummyScanCommand extends AbstractFileScanCommand
 {
     protected function proceedFile(Place $place, string $filename): void
     {
