@@ -38,7 +38,6 @@ abstract class AbstractScanCommand implements CommandInterface
     protected function showHelp(string $scriptName): void
     {
         echo 'Usage: ' . $scriptName . ' [placeId]' . PHP_EOL;
-        echo 'With no placeId, all host places will be scanned' . PHP_EOL;
     }
 
     protected function proceedPlace(Place $place): void
