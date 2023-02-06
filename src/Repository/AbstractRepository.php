@@ -30,16 +30,90 @@ abstract class AbstractRepository
         return $this->db->fetchOne($this->getModel(), $sql, ['id' => $id]);
     }
 
-    public function findBy(array $param): array
-    {
-        $where = [];
-        foreach ($param as $key => $value) {
-            $where[] = sprintf('`%s` = :%s', $key, $key);
+    protected function formatClause(
+        string $itemFormat,
+        array $elements,
+        string $joiner,
+    ): string {
+        $result = [];
+        foreach ($elements as $key => $value) {
+            $result[] = sprintf($itemFormat, $key, $value);
         }
 
-        $format = 'SELECT * FROM `%s` WHERE %s';
-        $sql = sprintf($format, $this->getTable(), join(' AND ', $where));
+        return join($joiner, $result);
+    }
 
-        return $this->db->fetch($this->getModel(), $sql, $param);
+    public function findBy(array $where): array
+    {
+        $sql = sprintf(
+            'SELECT * FROM `%s` WHERE %s',
+            $this->getTable(),
+            $this->formatClause('`%1$s` = :%1$s', $where, ' AND '),
+        );
+
+        return $this->db->fetch($this->getModel(), $sql, $where);
+    }
+
+    public function findOneBy(array $where): mixed
+    {
+        return $this->findBy($where)[0] ?? null;
+    }
+
+    public function insert(array $data, string $verb = 'INSERT INTO'): int
+    {
+        $sql = sprintf(
+            '%s `%s` (%s) VALUES (%s)',
+            $verb,
+            $this->getTable(),
+            $this->formatClause('`%1$s`', $data, ', '),
+            $this->formatClause(':%1$s', $data, ', '),
+        );
+
+        return $this->db->execute($sql, $data);
+    }
+
+    public function update(array $data, array $where): int
+    {
+        $sql = sprintf(
+            'UPDATE `%s` SET %s WHERE %s ',
+            $this->getTable(),
+            $this->formatClause('`%1$s` = :%1$s', $data, ', '),
+            $this->formatClause('`%1$s` = :%1$s', $where, ' AND '),
+        );
+
+        return $this->db->execute($sql, $data + $where);
+    }
+
+    public function delete(array $where): int
+    {
+        $sql = sprintf(
+            'DELETE FROM `%s` WHERE %s ',
+            $this->getTable(),
+            $this->formatClause('`%1$s` = :%1$s', $where, ' AND '),
+        );
+
+        return $this->db->execute($sql, $where);
+    }
+
+    protected function getWhere(array $data): array
+    {
+        return [$this->getPKey() => $data[$this->getPKey()]];
+    }
+
+    protected function getPayload(array $data): array
+    {
+        unset($data[$this->getPKey()]);
+
+        return $data;
+    }
+
+    public function updateModel(array $data): int
+    {
+        return $this->update($this->getPayload($data), $this->getWhere($data));
+    }
+
+    public function deleteModel(array $data): int
+    {
+        return $this->delete($this->getWhere($data));
     }
 }

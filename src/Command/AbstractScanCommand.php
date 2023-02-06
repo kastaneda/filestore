@@ -6,17 +6,20 @@ namespace App\Command;
 
 use App\Database;
 use App\Model\Place;
+use App\Repository\FilenameRepository;
 use App\Repository\PlaceRepository;
 use App\Util\FileFinder;
 
 abstract class AbstractScanCommand implements CommandInterface
 {
+    protected FilenameRepository $filenames;
     protected PlaceRepository $places;
 
     public function __construct(
         protected Database $db,
         protected string $hostname = 'localhost',
     ) {
+        $this->filenames = new FilenameRepository($this->db);
         $this->places = new PlaceRepository($this->db);
     }
 

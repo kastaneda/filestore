@@ -42,7 +42,9 @@ class Database
 
     public function fetch(string $class, string $sql, array $param = []): array
     {
+        // echo $sql . PHP_EOL;
         $statement = $this->getStatement($sql, $param);
+        // $statement->debugDumpParams();
         $statement->execute();
 
         return $statement->fetchAll(\PDO::FETCH_CLASS, $class);
@@ -52,16 +54,14 @@ class Database
     {
         $result = $this->fetch($class, $sql, $param);
 
-        if (empty($result)) {
-            return null;
-        }
-
-        return $result[0];
+        return $result[0] ?? null;
     }
 
     public function execute(string $sql, array $param = []): int
     {
+        // echo $sql . PHP_EOL;
         $statement = $this->getStatement($sql, $param);
+        // $statement->debugDumpParams();
         $statement->execute();
 
         return $statement->rowCount();
